@@ -138,11 +138,11 @@ class myListBox(wx.VListBox):
 
         self.height=self.indent=1	# need something
         self.choices=choices
-        self.actfg = platform=='darwin' and wx.Colour(255,255,255) or wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT)
-        self.inafg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOWTEXT)
+        self.actfg = platform=='darwin' and wx.Colour(255,255,255) or wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+        self.inafg = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWTEXT)
         self.hasfocus = False
         if platform=='win32' or platform.startswith('linux'):
-            self.font=wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+            self.font=wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         else:
             self.font=None	# default font is OK on wxMac 2.5
 
@@ -158,7 +158,7 @@ class myListBox(wx.VListBox):
         wx.EVT_CHAR(self, self.OnChar)
         if platform!='win32':	# Nav handled natively in 2.6
             wx.EVT_KEY_DOWN(self, self.OnKeyDown)
-        wx.EVT_TIMER(self, self.timer.GetId(), self.OnTimer)
+        wx.EVT_TIMER(self, self.OnTimer)
 
     def OnSetFocus(self, event):
         self.timer.Stop()
@@ -166,7 +166,7 @@ class myListBox(wx.VListBox):
         self.hasfocus = True
         sel=self.GetSelection()
         if sel>=0: self.RefreshLine(sel)
-        
+
     def OnKillFocus(self, event):
         self.timer.Stop()
         self.sel=''
@@ -209,18 +209,18 @@ class myListBox(wx.VListBox):
             self.SetSelection(0)
         elif event.GetKeyCode() in [wx.WXK_END, wx.WXK_NUMPAD_END]:
             self.SetSelection(len(self.choices)-1)
-        elif event.GetKeyCode() in [wx.WXK_PAGEUP, wx.WXK_PRIOR, wx.WXK_NUMPAD_PAGEUP, wx.WXK_NUMPAD_PRIOR]:
+        elif event.GetKeyCode() in [wx.WXK_PAGEUP, wx.WXK_NUMPAD_PAGEUP]:
             self.ScrollPages(-1)
             self.SetSelection(max(0,
                                   self.GetSelection()-self.GetClientSize().y/self.height))
-        elif event.GetKeyCode() in [wx.WXK_PAGEDOWN, wx.WXK_NEXT, wx.WXK_NUMPAD_PAGEDOWN, wx.WXK_NUMPAD_NEXT]:
+        elif event.GetKeyCode() in [wx.WXK_PAGEDOWN, wx.WXK_NUMPAD_PAGEDOWN]:
             self.ScrollPages(1)
             self.SetSelection(min(len(self.choices)-1,
                                   self.GetSelection()+self.GetClientSize().y/self.height))
         else:
             event.Skip()	# maybe generate char
             return
-        
+
         # Navigation keys reset search
         self.sel=''
         self.timer.Stop()
@@ -235,7 +235,7 @@ class myListBox(wx.VListBox):
 
     def OnChar(self, event):
         self.timer.Stop()
-        
+
         c=chr(event.GetKeyCode()).lower()
         self.sel+=c
         sel=self.GetSelection()
@@ -296,11 +296,11 @@ class GotoDialog(wx.Dialog):
         box1.Add(self.list1, 1, wx.ALL|wx.EXPAND, pad)
         grid1.Add(box1, 0, wx.TOP|wx.LEFT|wx.BOTTOM, 14) #
         (x,y)=self.list1.GetTextExtent("[H] Delray Community Hosp Emergency Helist - 48FD")	# Maybe longest string
-        x+=wx.SystemSettings_GetMetric(wx.SYS_VSCROLL_X)+8
+        x+=wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X)+8
         self.list1.SetMinSize((x,16*y))
         wx.EVT_LISTBOX(self, self.list1.GetId(), self.OnName)
         wx.EVT_SET_FOCUS(self.list1, self.OnName)
-        
+
         choices=self.aptcode.keys()
         sortfolded(choices)
         self.list2=myListBox(self,wx.ID_ANY, style=wx.LB_SINGLE,choices=choices)
@@ -322,7 +322,7 @@ class GotoDialog(wx.Dialog):
         wx.EVT_TEXT(self, self.lat.GetId(), self.OnLoc)	# wxPython doesn't (yet) support FloatingPointValidator
         wx.EVT_TEXT(self, self.lon.GetId(), self.OnLoc)
         grid1.Add(box3, 0, wx.LEFT|wx.BOTTOM|wx.EXPAND, 14)
-        
+
         box4=myCreateStdDialogButtonSizer(self, wx.OK|wx.CANCEL)
         self.ok=self.FindWindowById(wx.ID_OK)
         self.ok.Disable()
@@ -659,7 +659,7 @@ class MainWindow(wx.Frame):
         wx.EVT_CLOSE(self, self.OnClose)
         wx.EVT_KEY_DOWN(self, self.OnKeyDown)
         wx.EVT_MOUSEWHEEL(self, self.OnMouseWheel)
-        
+
         if platform=='win32':
             self.SetIcon(wx.Icon(executable, wx.BITMAP_TYPE_ICO))
         elif platform.lower().startswith('linux'):	# PNG supported by GTK
@@ -670,7 +670,7 @@ class MainWindow(wx.Frame):
             except wx._core.PyAssertionError:
                 pass	# raised if missing when running from source under wxGTK>=3
             self.SetIcons(icons)
-        
+
         if platform=='darwin':
             # icon pulled from Resources via Info.plist (except for MessageBox icon). Need minimal menu
             # http://developer.apple.com/documentation/UserExperience/Conceptual/AppleHIGuidelines/XHIGMenus/XHIGMenus.html#//apple_ref/doc/uid/TP30000356-TPXREF103
@@ -792,7 +792,7 @@ class MainWindow(wx.Frame):
         wx.EVT_TOOL(self.toolbar, wx.ID_PREFERENCES, self.OnPrefs)
         self.toolbar.AddLabelTool(wx.ID_HELP, 'Help', self.icon(['help-contents', 'help-about', 'help-browser', 'system-help', 'khelpcenter'], 'help.png'), wx.NullBitmap, 0, 'Help')
         wx.EVT_TOOL(self.toolbar, wx.ID_HELP, self.OnHelp)
-        
+
         self.toolbar.Realize()
         # Disable all toolbar buttons until app has loaded to prevent callbacks before app has initialised data
         self.toolids = [wx.ID_NEW,wx.ID_OPEN,wx.ID_SAVE,wx.ID_DOWN,wx.ID_FIND,wx.ID_ADD,wx.ID_EDIT,wx.ID_ITALIC,wx.ID_DELETE,wx.ID_UNDO,wx.ID_REFRESH,wx.ID_PREFERENCES,wx.ID_FORWARD,wx.ID_APPLY]
@@ -813,7 +813,7 @@ class MainWindow(wx.Frame):
             self.menubar.Enable(wx.ID_REFRESH,False)
 
         # Hack: Use zero-sized first field to hide toolbar button long help
-        self.statusbar=self.CreateStatusBar(3, wx.ST_SIZEGRIP)
+        self.statusbar=self.CreateStatusBar(3, wx.STB_SIZEGRIP)
         (x,y)=self.statusbar.GetTextExtent(u'  Lat: 99\u00B099\'99.999"W  Lon: 999\u00B099\'99.999"W  Hdg: 999.9  Elv: 9999.9  ')
         self.statusbar.SetStatusWidths([0, x+50,-1])
 
@@ -860,12 +860,12 @@ class MainWindow(wx.Frame):
     def icon(self, stocklist, rsrc):
         if not platform.startswith('linux'):
             return wx.Bitmap(join('Resources',rsrc), wx.BITMAP_TYPE_PNG)
-            
+
         # requires GTK+ >= 2.4
         for stock in stocklist:
             bmp=wx.ArtProvider.GetBitmap(stock, wx.ART_TOOLBAR, self.iconsize)
             if bmp.Ok(): return bmp
-            
+
         if stocklist in [['folder-import'], ['region-import']]:
             # Hack - manually composite two bitmaps
             if stocklist==['folder-import']:
@@ -1113,7 +1113,7 @@ class MainWindow(wx.Frame):
             else:
                 self.dist*=zoom
             if self.dist>maxzoom: self.dist=maxzoom
-        elif event.GetKeyCode() in [wx.WXK_PAGEUP, wx.WXK_PRIOR, wx.WXK_NUMPAD_PAGEUP, wx.WXK_NUMPAD_PRIOR]:
+        elif event.GetKeyCode() in [wx.WXK_PAGEUP, wx.WXK_NUMPAD_PAGEUP]:
             if event.ShiftDown():
                 if self.elev==2:
                     self.elev=5	# for symmetry
@@ -1122,7 +1122,7 @@ class MainWindow(wx.Frame):
             else:
                 self.elev+=1
             if self.elev>90: self.elev=90
-        elif event.GetKeyCode() in [wx.WXK_PAGEDOWN, wx.WXK_NEXT, wx.WXK_NUMPAD_PAGEDOWN, wx.WXK_NUMPAD_NEXT]:
+        elif event.GetKeyCode() in [wx.WXK_PAGEDOWN, wx.WXK_NUMPAD_PAGEDOWN]:
             if event.ShiftDown():
                 self.elev-=5
             else:
@@ -1233,8 +1233,8 @@ class MainWindow(wx.Frame):
             self.ShowLoc()
         except:
             if __debug__: print_exc()
-        
-        
+
+
     def OnNew(self, event):
         if not self.SaveDialog(): return
         package=self.NewDialog(True)
@@ -1262,7 +1262,7 @@ class MainWindow(wx.Frame):
                 self.menubar.Enable(wx.ID_DOWN,  True)
                 self.menubar.Enable(wx.ID_FIND,  False)
                 self.menubar.Enable(wx.ID_REFRESH, True)
-        
+
 
     def OnOpen(self, event):
         if not self.SaveDialog(): return
@@ -1277,8 +1277,8 @@ class MainWindow(wx.Frame):
         for d in choices:
             (x1,y)=list1.GetTextExtent(d)
             if x1>x: x=x1
-        list1.SetMinSize((x+16+wx.SystemSettings_GetMetric(wx.SYS_VSCROLL_X),
-                          16*y+2*wx.SystemSettings_GetMetric(wx.SYS_EDGE_X)))
+        list1.SetMinSize((x+16+wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X),
+                          16*y+2*wx.SystemSettings.GetMetric(wx.SYS_EDGE_X)))
         wx.EVT_LISTBOX(dlg, list1.GetId(), self.OnOpened)
         box1=myCreateStdDialogButtonSizer(dlg, wx.OK|wx.CANCEL)
         box0=wx.BoxSizer(wx.VERTICAL)
@@ -1317,7 +1317,7 @@ class MainWindow(wx.Frame):
                     self.menubar.Enable(wx.ID_REFRESH, True)
         else:
             dlg.Destroy()
-            
+
     def OnOpened(self, event):
         event.GetEventObject().GetParent().FindWindowById(wx.ID_OK).Enable()
 
@@ -1349,7 +1349,7 @@ class MainWindow(wx.Frame):
             except EnvironmentError, e:
                 if __debug__: print_exc()
                 myMessageBox(str(e.strerror),
-                             "Can't save %+03d%+04d.dsf." % (key[0], key[1]), 
+                             "Can't save %+03d%+04d.dsf." % (key[0], key[1]),
                              wx.ICON_ERROR|wx.OK, None)
                 return False
             except:
@@ -1366,7 +1366,7 @@ class MainWindow(wx.Frame):
             self.menubar.Enable(wx.ID_REFRESH, True)
 
         return True
-        
+
     def OnAdd(self, event):
         if self.canvas.add(self.palette.get(), self.loc[0], self.loc[1], self.hdg, self.dist):
             self.SetModified(True)
@@ -1437,7 +1437,7 @@ class MainWindow(wx.Frame):
             self.bkgd.Show()
             self.bkgd.Raise()
         self.canvas.Refresh()	# Show background image as selected
-        
+
     # Load or reload current package
     def OnReload(self, reload, package=None):
         progress=wx.ProgressDialog('Loading', '', 5, self)
@@ -1705,7 +1705,7 @@ class MainWindow(wx.Frame):
         self.loc=(round2res(self.loc[0]),round2res(self.loc[1]))
         progress.Update(5, 'Done')
         progress.Destroy()
-        
+
         self.canvas.valid=True	# Allow goto() to do its stuff
         self.canvas.goto(self.loc, self.hdg, self.elev, self.dist)
         self.ShowLoc()
@@ -1890,7 +1890,7 @@ class MainWindow(wx.Frame):
             elif r==wx.CANCEL:
                 return False
         return True
-        
+
     def NewDialog(self, isnew):
         if isnew:
             dlg=wx.TextEntryDialog(self, "Name of new scenery package:",
@@ -1930,8 +1930,8 @@ class MainWindow(wx.Frame):
             else:
                 dlg.Destroy()
                 return None
-            
-        
+
+
 # main
 app=wx.App(redirect=not __debug__)
 app.SetAppName(appname)

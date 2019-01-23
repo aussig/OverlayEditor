@@ -346,8 +346,8 @@ class MyGL(wx.glcanvas.GLCanvas):
         self.selectsaved=set()	# Selection at start of ctrl drag box
         self.snapnode = None	# (Polygon, idx) of node we snapped to in ClickModes.DragNode mode
         self.draginert=True
-        self.dragx=wx.SystemSettings_GetMetric(wx.SYS_DRAG_X)
-        self.dragy=wx.SystemSettings_GetMetric(wx.SYS_DRAG_Y)
+        self.dragx=wx.SystemSettings.GetMetric(wx.SYS_DRAG_X)
+        self.dragy=wx.SystemSettings.GetMetric(wx.SYS_DRAG_Y)
         if self.dragx<=1 or self.dragx>8 or self.dragy<=1 or self.dragy>8:
             self.dragx=self.dragy=5	# Finder on Mac appears to use 5
 
@@ -404,7 +404,7 @@ class MyGL(wx.glcanvas.GLCanvas):
         #wx.EVT_KILL_FOCUS(self, self.OnKill)	# debug
 
         self.timer=wx.Timer(self, wx.ID_ANY)
-        wx.EVT_TIMER(self, self.timer.GetId(), self.OnTimer)
+        wx.EVT_TIMER(self, self.OnTimer)
         wx.EVT_PAINT(self, self.OnPaint)
 
     def glInit(self):
