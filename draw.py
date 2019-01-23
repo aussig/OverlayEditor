@@ -81,7 +81,7 @@ class ClickModes:
     DragNode=4
     Scroll=5
     Move=6
-    
+
 
 # OpenGL state
 class GLstate():
@@ -316,7 +316,7 @@ class MyGL(wx.glcanvas.GLCanvas):
         self.doneinit=False	# Has glInit been called?
         self.valid=False	# do we have valid data for a redraw?
         self.needclear=False	# pending clear
-        self.needrefesh=False	# pending refresh
+        self.needrefresh=False	# pending refresh
         self.options = 0	# display options at last goto()
         self.tile=(0,999)	# [lat,lon] of SW
         self.centre=None	# [lat,lon] of centre
@@ -332,7 +332,7 @@ class MyGL(wx.glcanvas.GLCanvas):
         self.placements={}	# [Clutter] by tile
         self.unsorted={}	# [Clutter] by tile
         self.background=None
-        
+
         self.mousenow=None	# Current position (used in timer and drag)
         self.locked=0		# locked object types
         self.selected=set()	# selected placements
@@ -346,8 +346,8 @@ class MyGL(wx.glcanvas.GLCanvas):
         self.selectsaved=set()	# Selection at start of ctrl drag box
         self.snapnode = None	# (Polygon, idx) of node we snapped to in ClickModes.DragNode mode
         self.draginert=True
-        self.dragx=wx.SystemSettings_GetMetric(wx.SYS_DRAG_X)
-        self.dragy=wx.SystemSettings_GetMetric(wx.SYS_DRAG_Y)
+        self.dragx=wx.SystemSettings.GetMetric(wx.SYS_DRAG_X)
+        self.dragy=wx.SystemSettings.GetMetric(wx.SYS_DRAG_Y)
         if self.dragx<=1 or self.dragx>8 or self.dragy<=1 or self.dragy>8:
             self.dragx=self.dragy=5	# Finder on Mac appears to use 5
 
@@ -402,9 +402,9 @@ class MyGL(wx.glcanvas.GLCanvas):
         wx.EVT_MIDDLE_UP(self, self.OnMiddleUp)
         wx.EVT_IDLE(self, self.OnIdle)
         #wx.EVT_KILL_FOCUS(self, self.OnKill)	# debug
-        
+
         self.timer=wx.Timer(self, wx.ID_ANY)
-        wx.EVT_TIMER(self, self.timer.GetId(), self.OnTimer)
+        wx.EVT_TIMER(self, self.OnTimer)
         wx.EVT_PAINT(self, self.OnPaint)
 
     def glInit(self):
@@ -514,7 +514,7 @@ class MyGL(wx.glcanvas.GLCanvas):
             keyevent.m_keyCode=wx.WXK_DOWN
         if keyevent.m_keyCode:
             self.frame.OnKeyDown(keyevent)
-        
+
     def OnLeftDown(self, event):
         if self.clickmode==ClickModes.Move: return
         #event.Skip(False)	# don't change focus
@@ -578,7 +578,7 @@ class MyGL(wx.glcanvas.GLCanvas):
         self.mousenow=self.clickpos=[event.GetX(),event.GetY()]
         self.CaptureMouse()
         self.SetCursor(self.movecursor)
-        
+
     def OnMiddleUp(self, event):
         if self.HasCapture(): self.ReleaseMouse()
         self.SetCursor(wx.NullCursor)
@@ -622,7 +622,7 @@ class MyGL(wx.glcanvas.GLCanvas):
 
         if not self.clickmode:
             size = self.GetClientSize()
-            
+
             # Change cursor if over a window border
             if event.GetX()<sband or event.GetY()<sband or size.x-event.GetX()<sband or size.y-event.GetY()<sband:
                 self.SetCursor(self.scrollcursor)
@@ -652,7 +652,7 @@ class MyGL(wx.glcanvas.GLCanvas):
             return
         else:
             self.draginert=False
-            
+
         if self.clickmode==ClickModes.DragNode:
             # Start/continue node drag
             self.SetCursor(self.dragcursor)
@@ -708,7 +708,7 @@ class MyGL(wx.glcanvas.GLCanvas):
                     if self.frame.menubar:
                         self.frame.menubar.Enable(wx.ID_SAVE, True)
                         self.frame.menubar.Enable(wx.ID_UNDO, True)
-            
+
         elif self.clickmode==ClickModes.DragBox:
             self.select()
 
@@ -733,7 +733,7 @@ class MyGL(wx.glcanvas.GLCanvas):
 
         glViewport(0, 0, *size)
         vd=self.d*size.y/size.x
-        proj=array([[1.0/self.d,0,0,0], [0,1.0/vd,0,0], [0,0,(-1.0/30)/vd,0], [0,0,0,1]], float64)	# glOrtho(-self.d, self.d, -vd, vd, -30*vd, 30*vd)	# 30 ~= 1/sin(2), where 2 is minimal elevation angle        
+        proj=array([[1.0/self.d,0,0,0], [0,1.0/vd,0,0], [0,0,(-1.0/30)/vd,0], [0,0,0,1]], float64)	# glOrtho(-self.d, self.d, -vd, vd, -30*vd, 30*vd)	# 30 ~= 1/sin(2), where 2 is minimal elevation angle
         proj=dot(array([[1,0,0,0], [0,cos(radians(self.e)),sin(radians(self.e)),0], [0,-sin(radians(self.e)),cos(radians(self.e)),0], [0,0,0,1]], float64), proj)	# glRotatef(self.e, 1.0,0.0,0.0)
         proj=dot(array([[cos(radians(self.h)),0,-sin(radians(self.h)),0], [0,1,0,0], [sin(radians(self.h)),0,cos(radians(self.h)),0], [0,0,0,1]], float64), proj)	# glRotatef(self.h, 0.0,1.0,0.0)
         self.glstate.proj = dot(array([[1,0,0,0], [0,1,0,0], [0,0,1,0], [-self.x,-self.y,-self.z,1]], float64), proj)	# glTranslatef(-self.x, -self.y, -self.z)
@@ -794,7 +794,7 @@ class MyGL(wx.glcanvas.GLCanvas):
         elif self.needclear:
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             self.needclear=False
-        
+
         # Map imagery & background
         has_imagery = self.imagery.placements(self.d, size)	# allocate into dynamic VBO
         if log_paint:
@@ -1251,7 +1251,7 @@ class MyGL(wx.glcanvas.GLCanvas):
             myMessageBox("Can't read " + name, 'Cannot add this object.', wx.ICON_ERROR|wx.OK, self.frame)
             return False
         if __debug__: print "add", placement
-            
+
         if not placement.load(self.lookup, self.defs, self.vertexcache):
             myMessageBox("Can't read " + name, 'Cannot add this object.', wx.ICON_ERROR|wx.OK, self.frame)
             return False
@@ -1268,7 +1268,7 @@ class MyGL(wx.glcanvas.GLCanvas):
                     placement.nodes[0][i].rest = [(i+1)/2%2, i/2]	# ST coords
             else:
                 placement.canbezier = True
-                
+
         placement.layout(self.tile)
         placements=self.placements[self.tile]
         self.undostack.append(UndoEntry(self.tile, UndoEntry.ADD, [(len(placements), placement)]))
@@ -1519,7 +1519,7 @@ class MyGL(wx.glcanvas.GLCanvas):
         avlon/=len(undo.data)
         self.goto((avlat,avlon))
         return (avlat,avlon)
-        
+
     def clearsel(self):
         if self.selected:
             self.Refresh()
@@ -1716,7 +1716,7 @@ class MyGL(wx.glcanvas.GLCanvas):
                 for placements in self.placements.values() + self.navaidplacements.values():
                     for placement in placements:
                         placement.flush()
-                
+
             # load placements
             progress.Update(3, 'Objects')
             if newtile in self.unsorted:
@@ -1748,7 +1748,7 @@ class MyGL(wx.glcanvas.GLCanvas):
                     if placement.definition.texerr:
                         s=u"%s: %s" % placement.definition.texerr
                         if not s in errtexs: errtexs.append(s)
-                        
+
                     if not placement.islaidout():
                         if __debug__: clock2 = time.clock()
                         placement.layout(newtile)
@@ -1966,7 +1966,7 @@ def tesscombine(coords, vertex, weight):
         ratio=hypot(coords[0]-p1[0][0], coords[2]-p1[0][2])/d
         y=p1[0][1]+ratio*(p2[0][1]-p1[0][1])
         return ([coords[0],y,coords[2]], False, p1[2])
-    
+
 def tessedge(flag):
     pass	# dummy
 
