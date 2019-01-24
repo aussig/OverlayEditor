@@ -5,6 +5,28 @@ It runs on Windows 2000 or later, MacOS 10.5 or later and Linux.
 
 The application allows you to place 3D objects, building facades, draped textures, roads and other kinds of scenery objects on top of X-Plane's terrain. The application does not edit X-Plane airport layouts (_i.e._ runways, taxiways and navaids) and does not edit X-Plane's terrain mesh, but it does read and display both of these in simplified form so you can see where you're placing your objects.
 
+## Building
+
+### Prerequisites
+
+Prerequisites for wxPython (nothing works without this), 7z (essential for working with X-Plane 10's compressed DSFs), OpenGL (not essential, but important) and pyinstaller for building the package:
+
+```bash
+$ pip install wxPython
+$ pip install PyLZMA
+$ pip install PyOpenGL PyOpenGL_accelerate
+$ pip install pyinstaller
+```
+
+### Using pyinstaller
+
+Only tested on Mac so far. Uses pyinstaller to package, which in turn uses the `OverlayEditor-Mac.spec` specification file.
+
+```bash
+$ MacOS/setup
+```
+
+
 ## License
 
 This program is free software; you can redistribute it and/or modify
