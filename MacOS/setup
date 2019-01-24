@@ -5,25 +5,30 @@ if [ -z "$VERSION" ]; then exit 1; fi	# Expects to be run from top-level dir
 VER=`python -c "from version import appversion; print int(round(appversion*100,0))"`
 APPNAME=`python -c "from version import appname; print appname"`
 
-APP=${APPNAME}.app
-PY='OverlayEditor.py apt.py buckets.py clutter.py clutterdef.py contextlib2.py draw.py elevation.py DSFLib.py files.py fixed8x13.py MessageBox.py imagery.py importobjs.py lock.py nodes.py palette.py prefs.py version.py'
-RSRC=`ls Resources/*.{html,png,vs,fs,obj,jpg}`
-PREV='Resources/previews/*.jpg'
+APP=dist/OverlayEditor.app
+#PY='apt.py,buckets.py,clutter.py,clutterdef.py,contextlib2.py,draw.py,elevation.py,DSFLib.py,files.py,fixed8x13.py,MessageBox.py,imagery.py,importobjs.py,lock.py,nodes.py,palette.py,prefs.py,version.py'
+#RSRC=`ls Resources/*.{html,png,vs,fs,obj,jpg}`
+#PREV='Resources/previews/*.jpg'
 
-rm -f ${APPNAME}_${VER}_mac.zip
-rm -rf ${APP}
+#rm -f ${APPNAME}_${VER}_mac.zip
+#rm -rf ${APP}
 
-mkdir -p ${APP}/Contents
-sed s/appversion/${VERSION}/ <MacOS/Info.plist >${APP}/Contents/Info.plist
-mkdir -p ${APP}/Contents/MacOS
-cp -p MacOS/${APPNAME} MacOS/DSFTool ${APP}/Contents/MacOS/
-for i in $PY; do cp -p "$i" ${APP}/Contents/MacOS/; done
-mkdir -p ${APP}/Contents/Resources
-for i in $RSRC; do cp -p "$i" ${APP}/Contents/Resources/; done
-cp -p "`python -m requests.certs`" MacOS/*.icns MacOS/*.png MacOS/screenshot.jpg ${APP}/Contents/Resources/	# overwrite with Mac versions
-mkdir -p ${APP}/Contents/Resources/previews
-for i in $PREV; do cp -p "$i" ${APP}/Contents/Resources/previews/; done
-python2.7 -OO MacOS/bundledeps.py -x setuptools -x pkg_resources -x simplejson -x PIL.ImageQt -o ${APP} ${APPNAME}.py
+pyinstaller OverlayEditor.spec
+
+#mkdir -p ${APP}/Contents
+#sed s/appversion/${VERSION}/ <MacOS/Info.plist >${APP}/Contents/Info.plist
+#mkdir -p ${APP}/Contents/MacOS
+#cp -p MacOS/${APPNAME} MacOS/DSFTool ${APP}/Contents/MacOS/
+#for i in $PY; do cp -p "$i" ${APP}/Contents/MacOS/; done
+#mkdir -p ${APP}/Contents/Resources
+#for i in $RSRC; do cp -p "$i" ${APP}/Contents/Resources/; done
+#cp -p "`python -m requests.certs`" MacOS/*.icns MacOS/*.png MacOS/screenshot.jpg ${APP}/Contents/Resources/	# overwrite with Mac versions
+#mkdir -p ${APP}/Contents/Resources/previews
+#for i in $PREV; do cp -p "$i" ${APP}/Contents/Resources/previews/; done
+#python2.7 -OO MacOS/bundledeps.py -x setuptools -x pkg_resources -x simplejson -x PIL.ImageQt -o ${APP} ${APPNAME}.py
+
 xattr -r ${APP}	# warn about superfluous resource forks / metadata
-codesign --deep -s "Developer ID Application: Jonathan Harris (R8954VZGV2)" ${APP}
+
+echo 'Code Signing…'
+codesign --deep -s "Developer ID Application: Austin Goudge (QRUWRELK47)" ${APP}
 ditto -ck --keepParent --sequesterRsrc ${APP} ${APPNAME}_${VER}_mac.zip

@@ -68,7 +68,7 @@ class PaletteListBox(wx.VListBox):
     def __init__(self, parent, id, style, tabname, tabno, objects, pkgdir):
         if platform=='win32': style|=wx.ALWAYS_SHOW_SB	# fails on GTK
         wx.VListBox.__init__(self, parent, id, style=style)
-        self.font=wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font=wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         if platform.startswith('linux'):
             self.font.SetPointSize(10)	# Default is too big on Linux
         self.SetFont(self.font)
@@ -76,8 +76,8 @@ class PaletteListBox(wx.VListBox):
         if platform.startswith('linux'):
             self.height-=1
         self.imgs=parent.imgs
-        self.actfg = platform=='darwin' and wx.Colour(255,255,255) or wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT)
-        self.inafg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_WINDOWTEXT)
+        self.actfg = platform=='darwin' and wx.Colour(255,255,255) or wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+        self.inafg = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWTEXT)
         self.indent=4
         self.parent=parent
         self.tabname=tabname
@@ -185,11 +185,11 @@ class PaletteListBox(wx.VListBox):
 
 
 class PaletteChoicebook(wx.Choicebook):
-    
+
     def __init__(self, parent, frame, palette):
         self.frame = frame
         self.palette = palette	# the ancestor window that handles events for us
-        
+
         wx.Choicebook.__init__(self, parent, wx.ID_ANY, style=wx.CHB_TOP)
         self.last=(-1,None)
         self.lists=[]	# child listboxs
@@ -264,14 +264,14 @@ class PaletteChoicebook(wx.Choicebook):
         self.lists=[]
         self.lookup={}
         self.bad={}
-            
+
     def load(self, tabname, objects, pkgdir):
         #print "load", tabname
         tabno=len(self.lists)
         l=PaletteListBox(self, -1, wx.LB_SINGLE|wx.VSCROLL, tabname, tabno, objects, pkgdir)
         self.lists.append(l)
         self.AddPage(l, tabname)
-    
+
     def add(self, name):
         if __debug__: print "cbadd", name
         # Add to objects tab - assumes that this is first tab
@@ -363,10 +363,10 @@ class PaletteChoicebook(wx.Choicebook):
             self.bad[realname]=True
             self.lists[ontab].choices[ind]=(self.imgno_bad, name, realname)
             return
-        
+
 
 class Palette(wx.SplitterWindow):
-    
+
     def __init__(self, parent, frame):
         self.frame=frame
         self.lastkey=None
@@ -406,7 +406,7 @@ class Palette(wx.SplitterWindow):
         self.sashsize=self.GetClientSize()[1]-(self.cb.GetClientSize()[1]+self.preview.GetClientSize()[1])
         #print "sashsize", self.sashsize, self.GetSashSize(), self.preview.GetClientSize()
         self.SetSashPosition(self.GetClientSize()[1]-self.preview.GetClientSize()[0]-self.sashsize, True)
-        
+
     def OnSize(self, event):
         # emulate sash gravity = 1.0
         delta=event.GetSize().y-self.lastheight
@@ -457,10 +457,10 @@ class Palette(wx.SplitterWindow):
         self.sb.Clear()		# may change choicebook tab!
         self.lastkey=None
         self.preview.Refresh()
-            
+
     def load(self, tabname, objects, pkgdir=None):
         self.cb.load(tabname, objects, pkgdir)
-    
+
     def add(self, name):
         #print "add", name
         # Add to objects tab - assumes that this is first tab
@@ -469,7 +469,7 @@ class Palette(wx.SplitterWindow):
 
     def get(self):
         return self.cb.get()
-    
+
     def set(self, key):
         #print "set", key, self.lastkey
         if key!=self.lastkey:
@@ -511,7 +511,7 @@ class Palette(wx.SplitterWindow):
                 self.preview.SetBackgroundColour(wx.NullColour)
                 self.preview.ClearBackground()
                 return	# unknown object - can't do anything
-            
+
             # Look for built-in screenshot
             newfile=self.previewkey.replace('/', '_')[:-3]+'jpg'
             if newfile[0]=='_': newfile=newfile[1:]
