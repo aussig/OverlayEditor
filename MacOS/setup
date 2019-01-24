@@ -13,7 +13,7 @@ APP=dist/OverlayEditor.app
 #rm -f ${APPNAME}_${VER}_mac.zip
 #rm -rf ${APP}
 
-pyinstaller OverlayEditor.spec
+pyinstaller OverlayEditor-Mac.spec
 
 #mkdir -p ${APP}/Contents
 #sed s/appversion/${VERSION}/ <MacOS/Info.plist >${APP}/Contents/Info.plist
