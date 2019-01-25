@@ -122,5 +122,6 @@ app = BUNDLE(coll,
     icon='MacOS/OverlayEditor.icns',
     bundle_identifier='com.aussi.overlayeditor',
     info_plist={
-        'NSHighResolutionCapable': 'True'
+        'NSHighResolutionCapable': 'True',
+        'CFBundleShortVersionString': '2.70-b3-aussi'
     })
