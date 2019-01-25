@@ -30,5 +30,5 @@ pyinstaller OverlayEditor-Mac.spec
 xattr -r ${APP}	# warn about superfluous resource forks / metadata
 
 echo 'Code Signing…'
-#codesign --deep -s "Developer ID Application: Austin Goudge (QRUWRELK47)" ${APP}
+codesign --deep -s "Developer ID Application: Austin Goudge (QRUWRELK47)" ${APP}
 ditto -ck --keepParent --sequesterRsrc ${APP} ${APPNAME}_${VER}_mac.zip
