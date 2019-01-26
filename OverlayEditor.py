@@ -30,6 +30,8 @@ chdir(mypath)
 
 try:
     import wx
+    from wx.adv import HyperlinkCtrl
+    
 except:
     if __debug__: print_exc()
     import Tkinter, tkMessageBox
