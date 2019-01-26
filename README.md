@@ -9,7 +9,9 @@ The application allows you to place 3D objects, building facades, draped texture
 
 ### Prerequisites
 
-Using the system Python means that native Mac OS packages are included in the built app.  This can cause problems as these packages on the Mac doing the build may be compiled to take advantage of hardware features on that specific Mac.  The [PyInstaller docs](https://pyinstaller.readthedocs.io/en/v3.4/installation.html#installing-in-mac-os-x) recommend using a package manager such as [HomeBrew](https://brew.sh/) to avoid these types of problems.
+Using the system Python means that native Mac OS packages are included in the built app.  This can cause problems as these packages on the Mac doing the build may be compiled to take advantage of hardware features on that specific Mac.  The [PyInstaller docs](https://pyinstaller.readthedocs.io/en/v3.4/installation.html#installing-in-mac-os-x) recommend using a package manager such as [HomeBrew](https://brew.sh/) to avoid these types of problems, but that doesn't work.
+
+So, the only option to get it working was to download and install [ActivePython v2.7.14](https://www.activestate.com/products/activepython/). Note that this overwrites all the python symlinks in `/usr/loca/bin` (and also creates them as root). Also note that as ActivePython is installed into `/Library/Frameworks/Python.framework/`, the `pip install` commands below will likely need to be run using `sudo`.
 
 Prerequisites for wxPython (nothing works without this), 7z (essential for working with X-Plane 10's compressed DSFs), OpenGL (not essential, but important) and pyinstaller for building the package:
 
