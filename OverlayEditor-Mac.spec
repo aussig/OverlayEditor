@@ -1,5 +1,7 @@
 # -*- mode: python -*-
 
+import certifi
+
 block_cipher = None
 
 data_files = [('Resources/OverlayEditor.html', '.'),
@@ -78,7 +80,8 @@ data_files = [('Resources/OverlayEditor.html', '.'),
     ('MacOS/prefs.png', '.'),
     ('MacOS/reload.png', '.'),
     ('MacOS/save.png', '.'),
-    ('MacOS/undo.png', '.')]
+    ('MacOS/undo.png', '.'),
+    (certifi.where(), '.')]
 
 binary_files = [('MacOS/DSFTool', 'DSFTool')]
 
