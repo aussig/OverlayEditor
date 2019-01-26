@@ -27,7 +27,7 @@ pyinstaller OverlayEditor-Mac.spec
 #for i in $PREV; do cp -p "$i" ${APP}/Contents/Resources/previews/; done
 #python2.7 -OO MacOS/bundledeps.py -x setuptools -x pkg_resources -x simplejson -x PIL.ImageQt -o ${APP} ${APPNAME}.py
 
-xattr -r ${APP}	# warn about superfluous resource forks / metadata
+xattr ${APP}	# warn about superfluous resource forks / metadata
 
 echo 'Code Signing…'
 codesign --deep -s "Developer ID Application: Austin Goudge (QRUWRELK47)" ${APP}
