@@ -13,9 +13,12 @@ Using the system Python means that native Mac OS packages are included in the bu
 
 So, the only option to get it working was to download and install [ActivePython v2.7.14](https://www.activestate.com/products/activepython/). Note that this overwrites all the python symlinks in `/usr/loca/bin` (and also creates them as root). Also note that as ActivePython is installed into `/Library/Frameworks/Python.framework/`, the `pip install` commands below will likely need to be run using `sudo`.
 
-Prerequisites for wxPython (nothing works without this), 7z (essential for working with X-Plane 10's compressed DSFs), OpenGL (not essential, but important) and pyinstaller for building the package:
+Prerequisites for wxPython and numpy (nothing works without these), 7z (essential for working with X-Plane 10's compressed DSFs), OpenGL (not essential, but important) and pyinstaller for building the package.
+
+Note: numpy version fixed at 1.15 due to https://github.com/pyinstaller/pyinstaller/issues/3982 until pyinstaller is patched
 
 ```bash
+$ pip install numpy==1.15
 $ pip install wxPython
 $ pip install PyLZMA
 $ pip install PyOpenGL PyOpenGL_accelerate
