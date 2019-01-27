@@ -13,6 +13,7 @@ APP=dist/OverlayEditor.app
 #rm -f ${APPNAME}_${VER}_mac.zip
 #rm -rf ${APP}
 
+export PYTHONOPTIMIZE=1
 pyinstaller OverlayEditor-Mac.spec
 
 #mkdir -p ${APP}/Contents
