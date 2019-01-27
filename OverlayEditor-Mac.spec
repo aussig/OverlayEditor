@@ -127,5 +127,5 @@ app = BUNDLE(coll,
     bundle_identifier='com.aussi.overlayeditor',
     info_plist={
         'NSHighResolutionCapable': 'True',
-        'CFBundleShortVersionString': '2.70-b6-aussi'
+        'CFBundleShortVersionString': '2.70-b7-aussi'
     })
