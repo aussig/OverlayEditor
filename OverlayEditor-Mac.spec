@@ -83,7 +83,7 @@ data_files = [('Resources/OverlayEditor.html', '.'),
     ('MacOS/undo.png', '.'),
     (certifi.where(), '.')]
 
-binary_files = [('MacOS/DSFTool', 'DSFTool')]
+binary_files = [('MacOS/DSFTool', '.')]
 
 a = Analysis(['OverlayEditor.py'],
     pathex=['/Users/austin/Development/OverlayEditor'],
