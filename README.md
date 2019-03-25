@@ -13,14 +13,14 @@ Using the system Python means that native Mac OS packages are included in the bu
 
 So, the only option to get it working was to build on a machine with an older architecture.  This is obviously far from ideal.
 
-Prerequisites for wxPython and numpy (nothing works without these), 7z (essential for working with X-Plane 10's compressed DSFs), requests (for HTTP support), OpenGL (not essential, but important), AppKit (not sure what this is for, but there's an import error if it's not included) and pyinstaller for building the package.
+Prerequisites for wxPython and numpy (nothing works without these), 7z (essential for working with X-Plane 10's compressed DSFs), requests (for HTTP support), OpenGL (essential), AppKit (not sure what this is for, but there's an import error if it's not included) and pyinstaller for building the package.
 
-Note: numpy version fixed at 1.15 due to https://github.com/pyinstaller/pyinstaller/issues/3982 until pyinstaller is patched
+Note: numpy version fixed at 1.15.4 due to https://github.com/pyinstaller/pyinstaller/issues/3982 until pyinstaller is patched
 
 Note: On the Mac, AppKit may complain about various missing packages (such as `glib`, `gobject-introspection` etc.) so just brew install these.  The only one causing trouble was `libffi`, but setting the `PKG_CONFIG_PATH` as per https://stackoverflow.com/questions/22875270/error-installing-bcrypt-with-pip-on-os-x-cant-find-ffi-h-libffi-is-installed/25854749#25854749 fixed this.
 
 ```bash
-$ pip install numpy==1.15
+$ pip install numpy==1.15.4
 $ pip install wxPython
 $ pip install PyLZMA
 $ pip install requests
