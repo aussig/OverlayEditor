@@ -33,6 +33,8 @@ $ pip install pyinstaller
 
 Only tested on Mac so far. Uses pyinstaller to package, which in turn uses the `OverlayEditor-Mac.spec` specification file.
 
+Edit `OverlayEditor-Mac.spec` and `version.py` and insert desired version number in both (the `version.py` version is only used when naming the zip when using pyinstaller).
+
 ```bash
 $ MacOS/setup
 ```
