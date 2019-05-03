@@ -31,7 +31,7 @@ chdir(mypath)
 try:
     import wx
     from wx.adv import HyperlinkCtrl
-    
+
 except:
     if __debug__: print_exc()
     import Tkinter, tkMessageBox
@@ -563,7 +563,7 @@ class BackgroundDialog(wx.Frame):
             have_jpeg2000 = True
         dlg=wx.FileDialog(self, "Background image:", dir, f,
                           (platform=='darwin' and wx.VERSION>=(2,9) and "*.dds;*.jpg;*.jpeg;*.jp2;*.j2k;*.jpx;*.png;*.tif;*.tiff") or (have_jpeg2000 and "Image files|*.dds;*.jpg;*.jpeg;*.jp2;*.j2k;*.jpx;*.png;*.tif;*.tiff|DDS files (*.dds)|*.dds|JPEG files (*.jpg, *.jpeg)|*.jpg;*.jpeg|JPEG2000 files (*.jp2, *.j2k, *.jpx)|*.jp2;*.j2k;*.jpx|PNG files (*.png)|*.png|TIFF files (*.tif, *.tiff)|*.tif;*.tiff|All files|*.*") or "Image files|*.dds;*.jpg;*.jpeg;*.png;*.tif;*.tiff|DDS files (*.dds)|*.dds|JPEG files (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG files (*.png)|*.png|TIFF files (*.tif, *.tiff)|*.tif;*.tiff|All files|*.*",
-                          wx.OPEN|wx.FD_FILE_MUST_EXIST)
+                          wx.FD_OPEN|wx.FD_FILE_MUST_EXIST)
         if dlg.ShowModal()==wx.ID_OK:
             img = dlg.GetPath()
             self.image = ''
@@ -1727,7 +1727,7 @@ class MainWindow(wx.Frame):
     def OnImport(self, event):
         dlg=wx.FileDialog(self, "Import", glob(join(prefs.xplane,gcustom))[0], '',
                           platform=='darwin' and wx.VERSION>=(2,9) and "*.obj;*.pol;*.fac;*.for;*.lin;*.dds;*.png" or "All supported file types|*.obj;*.pol;*.fac;*.for;*.lin;*.dds;*.png|Object files (*.obj)|*.obj|Draped polygon files (*.pol)|*.pol|Facade files (*.fac)|*.fac|Forest files (*.for)|*.for|Line files (*.lin)|*.lin|Textures (*.dds, *.png)|*.dds;*.png|All files|*.*",
-                          wx.OPEN|wx.MULTIPLE|wx.FILE_MUST_EXIST)
+                          wx.FD_OPEN|wx.FD_MULTIPLE|wx.FD_FILE_MUST_EXIST)
         if dlg.ShowModal()!=wx.ID_OK:
             dlg.Destroy()
             return
